@@ -1,6 +1,5 @@
 import { CharacterService } from "./CharacterService";
 import { Skirmish } from "./skirmish";
-import readlinesync = require('readline-sync');
 import { Readline } from "./Readline";
 
 const characterService = new CharacterService();
@@ -18,6 +17,7 @@ if (selection.toLowerCase()[0] === 's') {
     console.log('\n')
     let skirmish = new Skirmish();
     skirmish.characterService = characterService;
+    skirmish.readline = readline;
     skirmish.initiate();
 
     console.log('\n')

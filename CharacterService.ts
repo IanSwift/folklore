@@ -1,6 +1,4 @@
 import { FLCharacter } from "./FL-Character-model";
-import readlinesync = require('readline-sync');
-import { Readline }  from './Readline';
 import { IReadline } from "./IReadline";
 import { FakeReadLine } from "./FakeReadLine";
 import { ICharacterService } from "./ICharacterService";
@@ -18,12 +16,12 @@ export class CharacterService implements ICharacterService {
     }
 
     initiateCharacters() {
-        let numberCharacters = readlinesync.question('How many characters? ');
+        let numberCharacters = this.readline.readlineAsNumber('How many characters? ');
 
         for (let i = 0; i < numberCharacters; i++) {
             let character = new FLCharacter();
-            character.might = readlinesync.question('Character ' +(i+1)+ ' might? ');
-            character.defense = readlinesync.question('Character ' +(i+1)+ ' defense? ');
+            character.might = this.readline.readlineAsNumber('Character ' +(i+1)+ ' might? ');
+            character.defense = this.readline.readlineAsNumber('Character ' +(i+1)+ ' defense? ');
             character.playerNumber = i + 1;
             this.characters.push(character);
         }
