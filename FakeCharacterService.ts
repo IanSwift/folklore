@@ -5,5 +5,7 @@ export class FakeCharacterService implements ICharacterService {
     getCharacters(): FLCharacter[] {
         throw new Error("Method not implemented.");
     }
-    updateCharacters() {};
+    updateCharacters() {
+        console.log("Create characters to update")
+    };
 }

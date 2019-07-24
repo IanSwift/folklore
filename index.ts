@@ -4,10 +4,10 @@ import { Readline } from "./Readline";
 
 const characterService = new CharacterService();
 const readline = new Readline();
-readline.characterService = characterService;
 characterService.readline = readline;
-readline.characterService = characterService;
 characterService.initiateCharacters();
+readline.characterService = characterService;
+
 
 console.log('\n')
 
@@ -19,6 +19,7 @@ if (selection.toLowerCase()[0] === 's') {
     skirmish.characterService = characterService;
     skirmish.readline = readline;
     skirmish.initiate();
+    readline.updateEnemies = skirmish;
 
     console.log('\n')
     while (!skirmish.round()) {

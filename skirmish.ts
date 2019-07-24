@@ -4,8 +4,9 @@ import { ICharacterService } from './ICharacterService';
 import { FakeCharacterService } from './FakeCharacterService';
 import { IReadline } from './IReadline';
 import { FakeReadLine } from './FakeReadLine';
+import { IUpdateEnemies } from './IUpdateEnemy';
 
-export class Skirmish {
+export class Skirmish implements IUpdateEnemies {
     skirmishEnemies = Array<SkirmishEnemy>();
 
     public characterService: ICharacterService = new FakeCharacterService();
@@ -52,9 +53,6 @@ export class Skirmish {
             console.log('Roll of: ' + enemyAttackRoll + ', might: ' + enemy.might + ', strength bonus ' + mightBonus + '\n');
             let enemyHit = false;
             this.characterService.getCharacters().forEach(character => {
-                console.log('looping over characters');
-                console.log(total)
-                console.log(character.defense)
                 if (total >= (character.defense + (character.attacking ? 0 : 10))) {
                     console.log('Enemy ' + enemy.enemyNumber + ' hit character ' + character.playerNumber + '!');
                     enemyHit = true;
@@ -77,15 +75,13 @@ export class Skirmish {
             let attackRoll = DiceRoller.rollDice('1d100');
             let total =  attackRoll + character.might + (character.attacking ? 0 : -10)
             console.log("Character " + character.playerNumber + " attack of " + total);
-            console.log("Roll of: " + attackRoll + ", might: " + character.might + character.attacking ? '': ', defending penalty: -10');
+            console.log("Roll of: " + attackRoll + ", might: " + character.might + (character.attacking ? '': ', defending penalty: -10'));
             let target = this.skirmishEnemies.filter(enemy => enemy.enemyNumber === character.target)[0];
             if (attackRoll + character.might + (character.attacking ? 0 : -10) >= target.defense) {
                 console.log("Character " + character.playerNumber + " hit enemy " + character.target + "!");
                 target.hits += 1
             }
-        })
-
-        console.log('\n')
+        })      
 
         this.skirmishEnemies.forEach(enemy => {
             console.log("Enemy " + enemy.enemyNumber + ' took ' + enemy.hits + ' hits.');
@@ -103,6 +99,37 @@ export class Skirmish {
         })
         return this.skirmishEnemies.length === 0;
 
+    }
+
+    updateEnemies(): void {
+        console.log(this.skirmishEnemies.map(enmy => enmy.enemyNumber).join(", "));
+        
+        let enemyNumber: number = this.readline.readlineAsNumber("Which creature would you like to update? ")
+
+        while (!this.skirmishEnemies.some(enmy => enmy.enemyNumber === enemyNumber)) {
+            console.log("That is not a valid character number.")
+            enemyNumber = this.readline.readlineAsNumber("Which creature would you like to update? ")
+        }
+
+        let enemyToUpdate = this.skirmishEnemies.filter(enmy=> enmy.enemyNumber === enemyNumber)[0];
+
+        console.log("Updatable fields on enemy " +enemyNumber+ " are: " + Object.keys(enemyToUpdate).join(', '));
+        
+        let field = this.readline.readline("Which field would you like to update? ");
+
+        while (!Object.keys(enemyToUpdate).some(key => key == field)) {
+            console.log("That is not an updatable field.");
+            field = this.readline.readline("Which field would you like to update? ");
+        }
+
+        let value = this.readline.readlineAsNumber("What value would you like to assign " + field + " on enemy " + enemyNumber+"? ");
+
+        Object.defineProperty(enemyToUpdate, field, {
+            value: value,
+            writable: true
+        });
+
+        console.log(enemyToUpdate);
     }
 
     

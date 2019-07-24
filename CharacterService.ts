@@ -28,11 +28,11 @@ export class CharacterService implements ICharacterService {
     }
 
     updateCharacters() {
-        console.log(this.characters.map(c => typeof c.playerNumber).join(", "));
+        console.log(this.characters.map(c => c.playerNumber).join(", "));
         
         let characterNumber: number = this.readline.readlineAsNumber("Which character would you like to update? ")
 
-        if (!this.characters.some(character => character.playerNumber === characterNumber)) {
+        while (!this.characters.some(character => character.playerNumber === characterNumber)) {
             console.log("That is not a valid character number.")
             characterNumber = this.readline.readlineAsNumber("Which character would you like to update? ")
         }
